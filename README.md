@@ -4,6 +4,8 @@
 
 Standalone preview window for [mini.pick](https://github.com/nvim-mini/mini.nvim).
 
+![demo.gif](demo/demo.gif)
+
 ## Overview
 
 `mini-pick-preview.nvim` extends mini.pick with an independent, always-visible preview window displayed on the right side. Unlike mini.pick's native single-window design where TAB toggles preview mode, this plugin provides a persistent preview window for a more comfortable browsing experience.
