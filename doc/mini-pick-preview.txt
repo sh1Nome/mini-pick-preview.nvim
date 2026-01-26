@@ -23,7 +23,6 @@ browsing experience.
 Features:
 - Automatic preview window on the right side
 - Inherits picker's border and highlight styles automatically
-- Zero configuration required
 - Works with all mini.pick built-in pickers
 - Lightweight and non-intrusive
 
