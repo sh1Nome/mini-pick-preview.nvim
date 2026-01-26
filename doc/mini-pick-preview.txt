@@ -1,0 +1,79 @@
+*mini-pick-preview.txt*  Standalone preview window for mini.pick
+
+MIT License Copyright (c) 2026
+
+==============================================================================
+CONTENTS                                     *mini-pick-preview-contents*
+
+1. Introduction                              |mini-pick-preview-intro|
+2. Installation                              |mini-pick-preview-install|
+3. Usage                                     |mini-pick-preview-usage|
+4. API                                       |mini-pick-preview-api|
+
+==============================================================================
+INTRODUCTION                                 *mini-pick-preview-intro*
+
+mini-pick-preview.nvim is a Neovim plugin that extends mini.pick with an
+independent, always-visible preview window displayed on the right side.
+
+Unlike mini.pick's native single-window design where TAB toggles preview mode,
+this plugin provides a persistent preview window for a more comfortable
+browsing experience.
+
+Features:
+- Automatic preview window on the right side
+- Inherits picker's border and highlight styles automatically
+- Zero configuration required
+- Works with all mini.pick built-in pickers
+- Lightweight and non-intrusive
+
+Requirements:
+- mini.nvim (mini.pick module)
+
+==============================================================================
+INSTALLATION                                 *mini-pick-preview-install*
+
+Use your preferred plugin manager. The plugin should be installed as a
+dependency of mini.nvim.
+
+==============================================================================
+USAGE                                        *mini-pick-preview-usage*
+
+Initialize the plugin in your Neovim configuration:
+>lua
+  require('mini-pick-preview').setup()
+<
+
+That's all. The preview window will automatically appear on the right side
+whenever mini.pick is active.
+
+The preview window:
+- Displays on the right side of the picker window
+- Uses the full available width
+- Has the same height as the picker window
+- Updates automatically as you navigate through search results
+
+Example: using mini.pick with preview
+>lua
+  require('mini-pick-preview').setup()
+  MiniPick.builtin.files()
+<
+
+==============================================================================
+API                                          *mini-pick-preview-api*
+
+setup()                                      *mini-pick-preview.setup()*
+
+  Initialize the plugin.
+
+  - Preview window appears on the right
+  - Height matches picker window height
+  - Width uses all available right-side space
+
+
+    require('mini-pick-preview').setup()
+  <
+
+==============================================================================
+vim:tw=78:et:ft=help:norl:
+
