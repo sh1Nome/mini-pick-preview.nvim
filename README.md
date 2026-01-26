@@ -12,7 +12,7 @@ Standalone preview window for [mini.pick](https://github.com/nvim-mini/mini.nvim
 
 ## Installation
 
-Use your preferred plugin manager. Example configuration:
+Use your preferred plugin manager.
 
 ## Setup
 
@@ -28,7 +28,6 @@ That's it. The preview window appears automatically on the right side whenever m
 
 - ✨ Automatic preview window on the right side
 - 🎨 Inherits picker's border and highlight styles
-- 📦 Zero configuration required
 - 🎯 Works with all mini.pick built-in pickers (files, buffers, etc.)
 - ⚡ Lightweight and non-intrusive
 
