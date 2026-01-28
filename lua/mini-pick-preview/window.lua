@@ -42,24 +42,30 @@ function M.open()
 		return nil
 	end
 
-	-- pickerのスタイル設定を継承
-	local border = picker_win_config.border or "rounded"
-	local noautocmd = picker_win_config.noautocmd or false
-	local col = picker_win_config.col + picker_win_config.width + 4
+	-- プレビューウィンドウの左端を計算
+	local col
+	local width
+	if picker_win_config.anchor == "NW" or picker_win_config.anchor == "SW" then
+		col = picker_win_config.col + picker_win_config.width + 4
+		width = vim.o.columns - col
+	else
+		col = vim.o.columns
+		width = vim.o.columns - (picker_win_config.col + 2)
+	end
 
-	-- プレビューウィンドウの位置・サイズを計算
+	-- プレビューウィンドウの設定
 	local preview_config = {
 		relative = "editor",
 		focusable = false,
 		style = "minimal",
-		border = border,
-		noautocmd = noautocmd,
+		border = picker_win_config.border,
+		noautocmd = picker_win_config.noautocmd,
 		anchor = picker_win_config.anchor,
 		zindex = picker_win_config.zindex and (picker_win_config.zindex - 1),
 		height = picker_win_config.height,
 		row = picker_win_config.row,
 		col = col,
-		width = vim.o.columns - col,
+		width = width,
 	}
 
 	-- プレビューウィンドウ作成
