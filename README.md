@@ -1,7 +1,5 @@
 # mini-pick-preview.nvim
 
-> ⚠️ **This project is currently under development.**
-
 Standalone preview window for [mini.pick](https://github.com/nvim-mini/mini.nvim).
 
 ![demo.gif](demo/demo.gif)
