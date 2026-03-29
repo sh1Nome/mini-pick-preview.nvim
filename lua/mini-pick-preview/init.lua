@@ -1,6 +1,6 @@
 --- *mini-pick-preview*  Standalone preview window for mini.pick
 ---
---- MIT License Copyright (c) 2026
+--- MIT License Copyright (c) 2026 sh1Nome
 ---
 ---@toc
 
