@@ -1,6 +1,88 @@
+--- *mini-pick-preview*  Standalone preview window for mini.pick
+---
+--- MIT License Copyright (c) 2026
+---
+---@toc
+
+--- mini-pick-preview.nvim is a Neovim plugin that extends mini.pick with an
+--- independent, always-visible preview window displayed on the right side.
+---
+--- Unlike mini.pick's native single-window design where TAB toggles preview mode,
+--- this plugin provides a persistent preview window for a more comfortable
+--- browsing experience.
+---
+--- Features:
+--- - Automatic preview window on the right side
+--- - Inherits picker's border and highlight styles automatically
+--- - Works with all mini.pick built-in pickers
+--- - Lightweight and non-intrusive
+---
+--- Requirements:
+--- - mini.nvim (mini.pick module)
+---@tag mini-pick-preview-intro
+---@toc_entry Introduction
+
+--- Use your preferred plugin manager. The plugin should be installed as a
+--- dependency of mini.nvim.
+---@tag mini-pick-preview-install
+---@toc_entry Install
+
+--- Initialize the plugin in your Neovim configuration:
+--- >lua
+---   require('mini-pick-preview').setup()
+--- <
+---
+--- That's all. The preview window will automatically appear on the right side
+--- whenever mini.pick is active.
+---
+--- The preview window:
+--- - Displays on the right side of the picker window
+--- - Uses the full available width
+--- - Has the same height as the picker window
+--- - Updates automatically as you navigate through search results
+---
+--- Example: using mini.pick with preview
+--- >lua
+---   require('mini-pick-preview').setup()
+---   MiniPick.builtin.files()
+--- <
+---@tag mini-pick-preview-usage
+---@toc_entry Usage
+
+--- Preview window is hidden behind mini.pick's main window (search window)
+--- ~
+---
+--- When using certain configurations, the preview window may be hidden behind
+--- mini.pick's main window (search window).
+---
+--- The preview window's position is calculated based on the search window's
+--- configuration values. In the example below, the search window's `col` is `0`,
+--- but it is actually drawn at position `52`. `52` is the sum of `width + border`.
+--- >lua
+---   require("mini.pick").setup({
+---     window = {
+---       config = {
+---         width = 50,
+---         anchor = "NE",
+---       },
+---     },
+---   })
+--- <
+---
+--- If the preview window is hidden behind the search window, please explicitly
+--- specify `col`, `width`, and `anchor` in mini.pick's setup.
+---@tag mini-pick-preview-troubleshooting
+---@toc_entry Troubleshooting
+
 local M = {}
 
----プラグインを初期化する
+--- Initialize the plugin and enable the preview window feature.
+---
+--- - Display preview window on the right side of the picker
+--- - Match preview window height to picker window height
+--- - Use all available width on the right side
+---@tag mini-pick-preview-api-setup
+---@toc_entry setup()
 function M.setup()
 	-- イベントリスナー登録
 	local events = require("mini-pick-preview.events")
