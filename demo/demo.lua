@@ -7,7 +7,7 @@ local plugin_dir = vim.fn.fnamemodify(vim.fn.expand("<sfile>"), ":h:h")
 vim.opt.rtp:prepend(plugin_dir)
 
 -- mini.nvimをランタイムパスに追加
-vim.opt.rtp:prepend(vim.fn.expand("$HOME") .. "/.local/share/nvim/site/pack/deps/start/mini.nvim")
+vim.opt.rtp:prepend(vim.fn.expand("$HOME") .. "/.local/share/nvim/site/pack/core/opt/mini.nvim")
 
 -- mini-pick-previewプラグインを初期化
 require("mini.pick").setup()
