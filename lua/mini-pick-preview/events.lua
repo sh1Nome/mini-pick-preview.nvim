@@ -24,6 +24,10 @@ local function update_preview(item)
 	if preview_buf and vim.api.nvim_buf_is_valid(preview_buf) then
 		pcall(function()
 			MiniPick.default_preview(preview_buf, item)
+			-- 非同期処理を待ってから画面更新
+			vim.defer_fn(function()
+				pcall(vim.cmd, "redraw")
+			end, MiniPick.config.delay.async)
 		end)
 	end
 end
