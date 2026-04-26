@@ -52,5 +52,25 @@ require("mini.pick").setup({
 })
 ```
 
-If the preview window is hidden behind the search window, please explicitly specify `col`, `width`, and `anchor` in mini.pick's setup:
+If the preview window is hidden behind the search window, please explicitly specify `col`, `width`, and `anchor` in mini.pick's setup.
+
+### Dynamic window size adjustment
+
+When using a fixed `width` configuration, the picker window always uses the same width regardless of the terminal size. This can cause layout issues if the terminal is resized.
+
+To adjust the picker window size dynamically each time the picker is opened, pass a **function** instead of a static value for the `config` option. The function is evaluated every time the picker starts, allowing it to adapt to the current terminal width:
+
+```lua
+require("mini.pick").setup({
+  window = {
+    config = function()
+      return {
+        width = math.floor((vim.o.columns - 8) / 2),
+      }
+    end,
+  },
+})
+```
+
+This approach ensures the picker always uses an appropriate width based on the current terminal size, preventing the preview window from overlapping.
 
