@@ -15,21 +15,31 @@ local function update_preview(item)
 	end
 
 	-- MiniPick が利用可能か確認
-	if not MiniPick or not MiniPick.default_preview then
+	if not MiniPick or not MiniPick.get_picker_opts then
 		return
 	end
 
 	-- プレビューバッファに表示
 	local preview_buf = window.get_preview_buf()
-	if preview_buf and vim.api.nvim_buf_is_valid(preview_buf) then
-		pcall(function()
-			MiniPick.default_preview(preview_buf, item)
-			-- 非同期処理を待ってから画面更新
-			vim.defer_fn(function()
-				pcall(vim.cmd, "redraw")
-			end, MiniPick.config.delay.async)
-		end)
+	if not (preview_buf and vim.api.nvim_buf_is_valid(preview_buf)) then
+		return
 	end
+
+	pcall(function()
+		local opts = MiniPick.get_picker_opts()
+		local source = opts and opts.source
+
+		if source and source.preview then
+			source.preview(preview_buf, item)
+		else
+			MiniPick.default_preview(preview_buf, item)
+		end
+
+		-- 非同期処理を待ってから画面更新
+		vim.defer_fn(function()
+			pcall(vim.cmd, "redraw")
+		end, MiniPick.config.delay.async)
+	end)
 end
 
 ---タイマーコールバック：カーソル移動を検知してプレビューを更新する
