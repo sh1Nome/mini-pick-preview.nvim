@@ -19,9 +19,9 @@ local function update_preview(item)
 		return
 	end
 
-	-- プレビューバッファに表示
-	local preview_buf = window.get_preview_buf()
-	if not (preview_buf and vim.api.nvim_buf_is_valid(preview_buf)) then
+	-- 新しいスクラッチバッファをプレビューウィンドウに表示してからプレビュー実行
+	local preview_buf = window.reset_preview_buf()
+	if not preview_buf then
 		return
 	end
 
@@ -34,6 +34,9 @@ local function update_preview(item)
 		else
 			MiniPick.default_preview(preview_buf, item)
 		end
+
+		-- source.previewがウィンドウのバッファを差し替えた場合に追従する
+		window.sync_preview_buf()
 
 		-- 非同期処理を待ってから画面更新
 		vim.defer_fn(function()

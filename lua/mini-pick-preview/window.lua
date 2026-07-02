@@ -12,7 +12,7 @@ M.preview_buf = nil
 local function create_preview_buffer()
 	local buf = vim.api.nvim_create_buf(false, true)
 	vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
-	vim.api.nvim_buf_set_option(buf, "bufhidden", "hide")
+	vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
 	return buf
 end
 
@@ -23,9 +23,6 @@ end
 function M.open()
 	-- 既存ウィンドウをクローズ
 	M.close()
-
-	-- プレビューバッファ作成
-	M.preview_buf = create_preview_buffer()
 
 	-- pickerウィンドウ（親ウィンドウ）を取得
 	local picker_win = vim.api.nvim_get_current_win()
@@ -68,37 +65,45 @@ function M.open()
 		width = width,
 	}
 
+	-- プレビューバッファ作成
+	M.preview_buf = create_preview_buffer()
+
 	-- プレビューウィンドウ作成
 	pcall(function()
 		M.preview_win = vim.api.nvim_open_win(M.preview_buf, false, preview_config)
 	end)
 
-	-- ハイライトをpickerから継承
-	if M.preview_win and vim.api.nvim_win_is_valid(M.preview_win) then
-		pcall(function()
-			vim.api.nvim_set_hl(0, "MiniPickPreviewNormal", { link = "MiniPickNormal" })
-			vim.api.nvim_set_hl(0, "MiniPickPreviewBorder", { link = "MiniPickBorder" })
-			vim.api.nvim_win_set_config(
-				M.preview_win,
-				{ winhighlight = "Normal:MiniPickPreviewNormal,FloatBorder:MiniPickPreviewBorder" }
-			)
-		end)
+	-- ウィンドウ作成に失敗した場合はバッファを破棄する
+	-- （未表示のバッファはbufhidden=wipeでは削除されないため）
+	if not (M.preview_win and vim.api.nvim_win_is_valid(M.preview_win)) then
+		vim.api.nvim_buf_delete(M.preview_buf, { force = true })
+		M.preview_buf = nil
+		return nil
 	end
+
+	-- ハイライトをpickerから継承
+	pcall(function()
+		vim.api.nvim_set_hl(0, "MiniPickPreviewNormal", { link = "MiniPickNormal" })
+		vim.api.nvim_set_hl(0, "MiniPickPreviewBorder", { link = "MiniPickBorder" })
+		vim.api.nvim_win_set_config(
+			M.preview_win,
+			{ winhighlight = "Normal:MiniPickPreviewNormal,FloatBorder:MiniPickPreviewBorder" }
+		)
+	end)
 
 	return M.preview_win
 end
 
 ---プレビューウィンドウをクローズする
+---プラグインが作成したバッファはbufhidden=wipeにより自動削除される
+---（source.previewが差し替えたユーザーのバッファは削除しない）
 function M.close()
 	if M.preview_win and vim.api.nvim_win_is_valid(M.preview_win) then
 		vim.api.nvim_win_close(M.preview_win, true)
-		M.preview_win = nil
 	end
 
-	if M.preview_buf and vim.api.nvim_buf_is_valid(M.preview_buf) then
-		vim.api.nvim_buf_delete(M.preview_buf, { force = true })
-		M.preview_buf = nil
-	end
+	M.preview_win = nil
+	M.preview_buf = nil
 end
 
 ---プレビューウィンドウが表示中かどうか
@@ -107,10 +112,26 @@ function M.is_open()
 	return M.preview_win ~= nil and vim.api.nvim_win_is_valid(M.preview_win)
 end
 
----プレビューバッファのIDを取得
----@return number | nil バッファID、表示中でなければnil
-function M.get_preview_buf()
-	return M.preview_buf
+---プレビューウィンドウに新しいスクラッチバッファを表示する
+---source.previewはバッファに行を書き込む形式と、ウィンドウのバッファ自体を
+---差し替える形式（vim.ui.selectのpreview_itemが{buf=...}を返す場合など）が
+---あるため、毎回新しいバッファを表示してから呼び出し元でsync_preview_buf()する
+---@return number | nil バッファID、ウィンドウ非表示時はnil
+function M.reset_preview_buf()
+	if not M.is_open() then
+		return nil
+	end
+	local buf = create_preview_buffer()
+	vim.api.nvim_win_set_buf(M.preview_win, buf)
+	M.preview_buf = buf
+	return buf
+end
+
+---プレビューウィンドウに実際に表示されているバッファに追従する
+function M.sync_preview_buf()
+	if M.is_open() then
+		M.preview_buf = vim.api.nvim_win_get_buf(M.preview_win)
+	end
 end
 
 return M
