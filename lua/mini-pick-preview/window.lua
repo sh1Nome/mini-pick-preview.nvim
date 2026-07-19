@@ -53,6 +53,8 @@ function M.open()
 	-- プレビューウィンドウの設定
 	local preview_config = {
 		relative = "editor",
+		-- mini.pickはsingle-window設計で、focusが移るとpickerが自動停止するため
+		-- プレビューウィンドウはfocus不可にする
 		focusable = false,
 		style = "minimal",
 		border = picker_win_config.border,
